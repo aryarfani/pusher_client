@@ -69,7 +69,7 @@ class Channel extends StreamHandler {
       'trigger',
       jsonEncode({
         'eventName': eventName,
-        'data': data.toString(),
+        'data': data,
         'channelName': this.name,
       }),
     );
