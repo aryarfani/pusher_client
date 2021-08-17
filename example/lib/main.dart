@@ -98,7 +98,10 @@ class _MyAppState extends State<MyApp> {
             RaisedButton(
               child: Text('Trigger Client Typing'),
               onPressed: () {
-                channel.trigger('client-istyping', {'name': 'Bob'});
+                channel.trigger('client-test-event', {
+                  'event': 'value',
+                  'number': 1234,
+                });
               },
             ),
           ],

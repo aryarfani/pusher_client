@@ -194,7 +194,7 @@ class PusherService: MChannel {
             let clientEvent: ClientEvent = try JSONDecoder().decode(ClientEvent.self, from: json.data(using: .utf8)!)
             let channelName = clientEvent.channelName
             let eventName = clientEvent.eventName
-            let data: String = clientEvent.data ?? ""
+            let data: Any = clientEvent.data ?? {}
             let errorMessage = "Trigger can only be called on private and presence channels."
             
             switch clientEvent.channelName {
