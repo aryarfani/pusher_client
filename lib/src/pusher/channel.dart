@@ -67,11 +67,11 @@ class Channel extends StreamHandler {
 
     await _mChannel.invokeMethod(
       'trigger',
-      jsonEncode({
+      {
         'eventName': eventName,
         'data': data,
         'channelName': this.name,
-      }),
+      },
     );
   }
 

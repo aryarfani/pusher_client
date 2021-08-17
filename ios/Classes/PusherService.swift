@@ -189,33 +189,26 @@ class PusherService: MChannel {
     }
     
     func trigger(_ call:FlutterMethodCall, result:@escaping FlutterResult) {
-        do {
-            let json = call.arguments as! String
-            let clientEvent: ClientEvent = try JSONDecoder().decode(ClientEvent.self, from: json.data(using: .utf8)!)
-            let channelName = clientEvent.channelName
-            let eventName = clientEvent.eventName
-            let data: Any = clientEvent.data ?? {}
-            let errorMessage = "Trigger can only be called on private and presence channels."
-            
-            switch clientEvent.channelName {
-            case _ where channelName.starts(with: PusherService.PRIVATE_ENCRYPTED_PREFIX):
-                result(FlutterError(code: "TRIGGER_ERROR", message: errorMessage, details: nil))
-            case _ where channelName.starts(with: PusherService.PRIVATE_PREFIX):
-                let channel: PusherChannel = _pusherInstance.connection.channels.find(name: channelName)!
-                channel.trigger(eventName: eventName, data: data)
-            case _ where channelName.starts(with: PusherService.PRESENCE_PREFIX):
-                let channel: PusherPresenceChannel = _pusherInstance.connection.channels.findPresence(name: channelName)!
-                channel.trigger(eventName: eventName, data: data)
-            default:
-                result(FlutterError(code: "TRIGGER_ERROR", message: errorMessage, details: nil))
-            }
-            
-            Utils.debugLog(msg: "[TRIGGER] \(eventName)")
-            result(nil)
-        } catch let err {
-            Utils.errorLog(msg: err.localizedDescription)
-            result(FlutterError(code: "TRIGGER_ERROR", message: err.localizedDescription, details: err))
+        let arguments = call.arguments as! Dictionary<String, Any>
+        let eventName = arguments["eventName"] as! String
+        let channelName = arguments["channelName"] as! String
+        let data = arguments["data"]!
+        let errorMessage = "Trigger can only be called on private and presence channels."
+        
+        switch channelName {
+        case _ where channelName.starts(with: PusherService.PRIVATE_ENCRYPTED_PREFIX):
+            result(FlutterError(code: "TRIGGER_ERROR", message: errorMessage, details: nil))
+        case _ where channelName.starts(with: PusherService.PRIVATE_PREFIX):
+            let channel: PusherChannel = _pusherInstance.connection.channels.find(name: channelName)!
+            channel.trigger(eventName: eventName, data: data)
+        case _ where channelName.starts(with: PusherService.PRESENCE_PREFIX):
+            let channel: PusherPresenceChannel = _pusherInstance.connection.channels.findPresence(name: channelName)!
+            channel.trigger(eventName: eventName, data: data)
+        default:
+            result(FlutterError(code: "TRIGGER_ERROR", message: errorMessage, details: nil))
         }
         
+        Utils.debugLog(msg: "[TRIGGER] \(eventName)")
+        result(nil)
     }
 }

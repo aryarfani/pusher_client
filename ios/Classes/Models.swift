@@ -94,9 +94,3 @@ struct Event: Codable {
     var userId: String?;
     var data: String?;
 }
-
-struct ClientEvent: Codable {
-    var eventName: String
-    var channelName: String
-    var data: Dictionary<String, String>?;
-}
